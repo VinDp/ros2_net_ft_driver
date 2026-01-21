@@ -41,6 +41,17 @@
       <xacro:property name="sensor_height" value="0.0375"/>
     </xacro:if>
 
+    <xacro:if value="${sensor_type == 'ati_delta'}">
+      <xacro:property name="mesh_file" value="ati_delta_ft_sensor"/>
+      <xacro:property name="sensor_mass" value="0.913"/>
+      <xacro:property name="sensor_radius" value="${0.094/2}"/>
+      <xacro:property name="sensor_height" value="0.0333"/>
+
+      <!-- Hotfix to have correct mapping to interface type
+      in the hw interface-->
+      <xacro:property name="sensor_type" value="ati"/>
+    </xacro:if>
+
     <joint name="${prefix}fts_joint" type="fixed">
       <!-- The parent link must be read from the robot model it is attached to. -->
       <parent link="${parent}"/>
@@ -56,10 +67,10 @@
         </geometry>
       </visual>
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://net_ft_description/meshes/collision/${mesh_file}.stl"/>
+          <mesh filename="package://net_ft_description/meshes/collision/${mesh_file}.stl" scale="0.001 0.001 0.001" />
         </geometry>
+	<origin xyz="${-sensor_radius} ${-sensor_radius} ${-sensor_height}" />
       </collision>
       <xacro:cylinder_inertial radius="${sensor_radius}" length="${sensor_height}" mass="${sensor_mass}">
         <xacro:insert_block name="origin" />
